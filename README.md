@@ -1,6 +1,6 @@
-# 3×4 Label Maker
+# Label Maker
 
-A single-page web tool that turns one line of text into a printable 3″ × 4″ label. Use `//` to split the text into lines. Each line is centered, and the text is scaled to fill the label.
+A single-page web tool that turns one line of text into a printable label. It supports **3″ × 4″**, **4″ × 6″** and **2 5/16″ × 4″** labels, each tall or wide. Use `//` to split the text into lines. Each line is centered, and the text is scaled to fill the label.
 
 **Example input**
 
@@ -21,24 +21,26 @@ text 4
 
 1. Open the site in Chrome or Edge.
 2. Type your text in the box. The preview updates as you type.
-3. Press **Enter** or click **Print label**.
-4. The first time you print, set the print dialog to:
+3. Pick the label size and orientation.
+4. Press **Enter** or click **Print label**.
+5. The first time you print with a given label size, set the print dialog to:
    - **Printer:** your label printer
-   - **Paper size:** 3×4 (or 4×3 if you use landscape)
+   - **Paper size:** the label size you picked on the page
    - **Margins:** None
    - **Scale:** 100% / Actual size (not "Fit to page")
 
-   Most browsers remember these settings for later prints.
+   Most browsers remember these settings for later prints. If you switch label sizes, check the paper size in the dialog again. Some printer drivers need each label size added as a custom paper size first.
 
 ### Options
 
 | Option | What it does |
 | --- | --- |
-| Orientation | Switches between 3″ wide × 4″ tall (default) and 4″ wide × 3″ tall. |
+| Label size | 3″ × 4″ (default), 4″ × 6″, or 2 5/16″ × 4″. |
+| Orientation | **Tall** puts the short side across the top (e.g. 3″ wide × 4″ tall). **Wide** turns it sideways (4″ wide × 3″ tall). |
 | Bold | Prints the text in bold. On by default. |
 | Size each line separately | Lets each line scale on its own, so short lines print larger. When it's off, every line uses the same size. |
 
-The page keeps your last text and orientation in your browser (localStorage). Nothing is sent anywhere.
+The page keeps your last text, label size and orientation in your browser (localStorage). Nothing is sent anywhere.
 
 ## Printing without the dialog (optional)
 
@@ -70,7 +72,21 @@ All the settings are near the top of the `<script>` block in `index.html`:
 | `LINE_GAP` | `0.18` | Space between lines, as a fraction of the font size |
 | `FONT` | `Helvetica, Arial, sans-serif` | Font family |
 
-To change the label dimensions, edit the `size()` function, which returns `{ w: 3, h: 4 }` for portrait and `{ w: 4, h: 3 }` for landscape. You can also change the button labels in the HTML.
+### Adding or changing label sizes
+
+The sizes are listed in the `SIZES` object in `index.html`, in inches, as `[short side, long side]`:
+
+```js
+const SIZES = { "3x4": [3, 4], "4x6": [4, 6], "2.3125x4": [2.3125, 4] };
+```
+
+To add a size, add an entry here, for example `"2x3": [2, 3]`. Then add a matching button inside `<span class="seg" id="sizes">`:
+
+```html
+<button data-s="2x3">2″ × 3″</button>
+```
+
+The `data-s` value must match the key in `SIZES`. The default size is the button with `class="on"`, together with `let labelSize = "3x4";` in the script.
 
 ## Files
 
